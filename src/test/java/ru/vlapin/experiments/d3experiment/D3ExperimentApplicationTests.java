@@ -5,11 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_UTF8_VALUE;
 
 import com.jayway.jsonpath.JsonPath;
+import java.util.List;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +18,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.vlapin.experiments.d3experiment.model.Cat;
+import ru.vlapin.experiments.d3experiment.model.Post;
 import ru.vlapin.experiments.d3experiment.services.CatsClient;
 import ru.vlapin.experiments.d3experiment.services.JSONPlaceHolderClient;
 
 @Slf4j
-@SpringBootTest(classes = D3ExperimentApplication.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-@WithMockUser(authorities = "ADMIN")
+//@WithMockUser(authorities = "ADMIN")
 class D3ExperimentApplicationTests {
 
   MockMvc mockMvc;
@@ -37,6 +38,11 @@ class D3ExperimentApplicationTests {
   JSONPlaceHolderClient client;
 
   CatsClient catsClient;
+
+  @BeforeAll
+  static void setUp() {
+    System.setProperty("java.net.preferIPv4Stack" , "true");
+  }
 
   @Test
   @SneakyThrows
@@ -51,14 +57,12 @@ class D3ExperimentApplicationTests {
   }
 
   @Test
-  @Disabled // TODO: 2019-06-02
-  @DisplayName("Call cats with id via Feign")
+  @DisplayName("Call cat with id via Feign")
   void callCatsWithIdViaFeign() {
-    log.info(catsClient.getCatById(2L).getContent().toString());
+    log.info(catsClient.getCatById(1L).getContent().toString());
   }
 
   @Test
-  @Disabled // TODO: 2019-06-02
   @DisplayName("Call all cats via Feign")
   void callCatsViaFeign() {
 //    Resources<Cat> cats = catsClient.getCats();
@@ -72,8 +76,11 @@ class D3ExperimentApplicationTests {
   @Test
   @DisplayName("Call other REST API via Feign client")
   void posts() {
-    assertThat(client.getPosts())
+    List<Post> posts = client.getPosts();
+    assertThat(posts)
         .hasSize(100)
         .contains(client.getPostById(59L));
+
+    System.out.println(posts.get(59).getBody());
   }
 }

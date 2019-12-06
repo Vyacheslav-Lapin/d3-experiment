@@ -7,19 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class D3ExperimentApplication {
 
   public static void main(String... args) {
-
-//    int x, y, z;
-//
-//    kjhdfgkjhdfg
-//
-//    z = y = x = 5;
-//
-//    x= 10;
-//
-//    r.setD(876345);
-
-
     SpringApplication.run(D3ExperimentApplication.class, args);
   }
-}
 
+}

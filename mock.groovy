@@ -1,7 +1,8 @@
+//$ spring run mock.groovy
 @RestController
 class ThisWillActuallyRun {
 
-  @RequestMapping("/api/item")
+  @GetMapping("api/hello")
   String home() {
     "Hello World!"
   }

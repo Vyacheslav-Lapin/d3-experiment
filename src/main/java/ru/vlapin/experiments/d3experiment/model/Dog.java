@@ -11,9 +11,12 @@ import lombok.EqualsAndHashCode.Exclude;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 @Data
 @Entity
+@Component
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class Dog {
@@ -32,4 +35,3 @@ public class Dog {
   String name;
 
 }
-

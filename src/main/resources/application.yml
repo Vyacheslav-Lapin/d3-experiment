@@ -3,7 +3,11 @@ spring:
     user:
       name: admin
       password: qwerty
+#      roles: USER
   data:
     rest:
       base-path: /api
-#      roles: USER
+
+#server:
+#  port: 80
+

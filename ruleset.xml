@@ -12,6 +12,23 @@
         <ignoreVersion type="regex">3.*</ignoreVersion>
       </ignoreVersions>
     </rule>
+
+    <rule groupId="org.springframework.boot"
+          artifactId="spring-boot-starter-parent"
+          comparisonMethod="maven">
+      <ignoreVersions>
+        <ignoreVersion>2.2.0.RELEASE</ignoreVersion>
+        <ignoreVersion>2.2.1.RELEASE</ignoreVersion>
+      </ignoreVersions>
+    </rule>
+
+    <rule groupId="org.springframework.cloud"
+          artifactId="spring-cloud-dependencies"
+          comparisonMethod="maven">
+      <ignoreVersions>
+        <ignoreVersion>Hoxton.RELEASE</ignoreVersion>
+      </ignoreVersions>
+    </rule>
   </rules>
 
   <ignoreVersions>
