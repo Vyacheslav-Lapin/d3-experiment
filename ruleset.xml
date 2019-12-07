@@ -19,6 +19,7 @@
       <ignoreVersions>
         <ignoreVersion>2.2.0.RELEASE</ignoreVersion>
         <ignoreVersion>2.2.1.RELEASE</ignoreVersion>
+        <ignoreVersion>2.2.2.RELEASE</ignoreVersion>
       </ignoreVersions>
     </rule>
 
