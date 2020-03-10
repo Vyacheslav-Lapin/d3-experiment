@@ -13,23 +13,34 @@
       </ignoreVersions>
     </rule>
 
-    <rule groupId="org.springframework.boot"
-          artifactId="spring-boot-starter-parent"
-          comparisonMethod="maven">
-      <ignoreVersions>
-        <ignoreVersion>2.2.0.RELEASE</ignoreVersion>
-        <ignoreVersion>2.2.1.RELEASE</ignoreVersion>
-        <ignoreVersion>2.2.2.RELEASE</ignoreVersion>
-      </ignoreVersions>
-    </rule>
+    <!--<rule groupId="org.springframework.boot"-->
+    <!--      artifactId="spring-boot-starter-parent"-->
+    <!--      comparisonMethod="maven">-->
+      <!--<ignoreVersions>-->
+      <!--  <ignoreVersion>2.2.0.RELEASE</ignoreVersion>-->
+      <!--  <ignoreVersion>2.2.1.RELEASE</ignoreVersion>-->
+      <!--  <ignoreVersion>2.2.2.RELEASE</ignoreVersion>-->
+      <!--</ignoreVersions>-->
+    <!--</rule>-->
 
-    <rule groupId="org.springframework.cloud"
-          artifactId="spring-cloud-dependencies"
-          comparisonMethod="maven">
-      <ignoreVersions>
-        <ignoreVersion>Hoxton.RELEASE</ignoreVersion>
-      </ignoreVersions>
-    </rule>
+    <!--<rule groupId="org.springframework.hateoas"-->
+    <!--      artifactId="spring-hateoas"-->
+    <!--      comparisonMethod="maven">-->
+    <!--  <ignoreVersions>-->
+    <!--    <ignoreVersion>1.0.0.RELEASE</ignoreVersion>-->
+    <!--    <ignoreVersion>1.0.1.RELEASE</ignoreVersion>-->
+    <!--    <ignoreVersion>1.0.2.RELEASE</ignoreVersion>-->
+    <!--  </ignoreVersions>-->
+    <!--</rule>-->
+
+
+    <!--<rule groupId="org.springframework.cloud"-->
+    <!--      artifactId="spring-cloud-dependencies"-->
+    <!--      comparisonMethod="maven">-->
+    <!--  <ignoreVersions>-->
+    <!--    <ignoreVersion>Hoxton.RELEASE</ignoreVersion>-->
+      <!--</ignoreVersions>-->
+    <!--</rule>-->
   </rules>
 
   <ignoreVersions>

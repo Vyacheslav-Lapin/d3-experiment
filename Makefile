@@ -1,4 +1,4 @@
-# @author Vyacheslav Lapin aka "C'est la vie". 2019 (c) http://vlapin.ru
+# @author Vyacheslav Lapin aka "C'est la vie". 2020 (c) http://vlapin.ru
 # This Makefile is writen as command-line Project API for Java Maven multi-module
 # projects with Lombok annotation processor. Required software list:
 # - Maven, Git, JDK
@@ -8,7 +8,7 @@
 
 # For Windows users:
 # - Comment or delete the JEnv block in "init" task
-# - Delete "./" substring in some commands, like "./mvnw verify" - it should looks like "mvnw verify"
+# - Delete "./" substring in some commands, like ./mvnw verify - it should looks like "mvnw verify"
 # - Replace "ln" with "mklink" command (see https://stackoverflow.com/questions/17246558/what-is-the-windows-equivalent-to-the-ln-s-target-folder-link-folder-unix-s)
 
 #--------------------------
@@ -46,7 +46,16 @@ init:
 	echo "\n/.mvn\n/mvnw*\n" >> .git/info/exclude
 
 #	jenv
-	jenv local openjdk64-`cat pom.xml | xml sel -N pom=http://maven.apache.org/POM/4.0.0 -t -v /pom:project/pom:properties/pom:java.version`
+ifeq ($(JV), 1.8)
+	jenv local 1.8
+else ifeq ($(JV), 14)
+	jenv local 14-ea
+else ifeq ($(JV), 15)
+	jenv local 15-ea
+else
+	jenv local $(JV).0
+endif
+
 	echo "\n/.java-version\n" >> .git/info/exclude
 
 #	checkstyler
@@ -59,10 +68,10 @@ uninit:
 reboot: clear uninit init
 
 uninit-full: clear uninit
-	rm -rf .idea d3-experiment.iml .git
+	rm -rf .idea $(PA).iml .git
 
 reboot-full: uninit-full init
-	echo "\n/.idea/\n/d3-experiment.iml\n/out/\n/classes/\n" >> .git/info/exclude
+	echo "\n/.idea/\n/$(PA).iml\n/out/\n/classes/\n" >> .git/info/exclude
 	git add src .editorconfig .gitignore Makefile pom.xml README.md
 	idea pom.xml
 
@@ -71,12 +80,12 @@ jshell:
 
 build:
 	./mvnw verify
-	chmod +x ./target/d3-experiment-0.0.1-SNAPSHOT.jar
+	chmod +x ./target/$(PA)-0.0.1-SNAPSHOT.jar
 
 run:
 	./mvnw spring-boot:start -Dspring.profiles.active=local
-#	./target/d3-experiment-0.0.1-SNAPSHOT.jar
-#	java -jar --enable-preview ./target/d3-experiment-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+#	./target/$(PA)-0.0.1-SNAPSHOT.jar
+#	java -jar --enable-preview ./target/$(PA)-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 
 effective-pom:
 	./mvnw help:effective-pom
@@ -91,17 +100,39 @@ update:
 	./mvnw versions:update-parent versions:update-properties versions:display-plugin-updates
 
 delombok: clear
-#	./mvnw lombok:delombok
-	mkdir -p ./target/generated-sources/delombok
+	./mvnw lombok:delombok
+#	mkdir -p ./target/generated-sources/delombok
+#	java -cp `./mvnw dependency:build-classpath | grep -A1 'Dependencies classpath' | tail -1` \
+#		lombok.launch.Main delombok ./src/main/java \
+#		-d ./target/generated-sources/delombok
+
+# delombok code from module with "A" parameter name, so write name (artifactId) to it
+# Usage:
+# make module-delombok A=<module-name>
+module-delombok: clear
+	mkdir -p $(A)/target/generated-sources/delombok
 	java -cp `./mvnw dependency:build-classpath | grep -A1 'Dependencies classpath' | tail -1` \
-		lombok.launch.Main delombok ./src/main/java \
-		-d ./target/generated-sources/delombok
+		lombok.launch.Main delombok $(A)/src/main/java \
+		-d $(A)/target/generated-sources/delombok
 
 test-delombok: delombok
 	./mvnw lombok:testDelombok
+#	mkdir -p ./target/generated-test-sources/delombok
+#	java -cp `./mvnw dependency:build-classpath | grep -A1 'Dependencies classpath' | tail -1`:./target/generated-sources/delombok \
+#		lombok.launch.Main delombok ./src/test/java \
+#		-d ./target/generated-test-sources/delombok
+
+# delombok code of tests from module with "A" parameter name, so write name (artifactId) to it
+# Usage:
+# make module-test-delombok A=<module-name>
+module-test-delombok: module-delombok
+	mkdir -p $(A)/target/generated-test-sources/delombok
+	java -cp `./mvnw dependency:build-classpath | grep -A1 'Dependencies classpath' | tail -1`:$(A)/target/generated-sources/delombok \
+		lombok.launch.Main delombok $(A)/src/test/java \
+		-d $(A)/target/generated-test-sources/delombok
 
 git-fork-init: init
-	git remote add upstream git://github.com/Vyacheslav-Lapin/d3-experiment.git
+	git remote add upstream git://github.com/Vyacheslav-Lapin/$(PA).git
 	git fetch upstream
 
 #branch name
@@ -112,3 +143,23 @@ git-branch:
 
 .DEFAULT_GOAL := build-run
 build-run: update build run
+
+#archetype: clear uninit
+#	./mvnw archetype:create-from-project -Darchetype.properties=archetype.properties
+#	cd target/generated-sources/archetype/.idea && rm workspace.xml usage.statistics.xml tasks.xml
+#	make init
+##	idea ./target/generated-sources/archetype/pom.xml
+#	cd target/generated-sources/archetype && ./../../../mvnw clean install
+#
+#clone: archetype
+#	cd .. && mvn archetype:generate \
+#		-DarchetypeGroupId=ru.vlapin.projects \
+#		-DarchetypeArtifactId=monolith-archetype \
+#		-DartifactId=monolith-example \
+#		-DarchetypeVersion=0.0.1-SNAPSHOT \
+#		-DgroupId=ru.vlapin.projects \
+#		-Dpackage=ru.vlapin.projects.monolith \
+#		-Dversion=0.0.1-SNAPSHOT \
+#		-DinteractiveMode=false
+#
+#	idea ./../monolith-example/pom.xml

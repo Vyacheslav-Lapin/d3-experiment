@@ -4,10 +4,11 @@ spring:
       name: admin
       password: qwerty
 #      roles: USER
-  data:
-    rest:
-      base-path: /api
+#  data:
+#    rest:
+#      base-path: /api
 
-#server:
-#  port: 80
-
+server:
+  port: 80
+#  servlet:
+#    context-path: /api

@@ -1,34 +1,54 @@
 package ru.vlapin.experiments.d3experiment;
 
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
+import lombok.Value;
+import lombok.experimental.FieldNameConstants;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
+@Slf4j
+@UtilityClass
 public final class SimpleConnectToDB {
 
-  private static final String DB_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+  private final String DB_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
 
   //language=H2
-  private static final String CREATE_TABLE_SQL = "create table student (id identity, name varchar not null, group_id int)";//language=H2
-  private static final String INSERT_STUDENT_SQL = "insert into student (name, group_id) values ('Вася Пупкин', 123456)";//language=H2
-  private static final String GET_STUDENTS_SQL = "select id, name, group_id from student";
-
-  private SimpleConnectToDB() {
-    throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
-  }
+  private final String CREATE_TABLE_SQL = "create table student (id identity, name varchar not null, groupId int)";//language=H2
+  private final String INSERT_STUDENT_SQL = "insert into student (name, groupId) values ('Вася Пупкин', 123456)";//language=H2
+  private final String GET_STUDENTS_SQL = "select id, name, groupId from student";
 
   @SneakyThrows
-  public static void main(String... __) {
+  public void main(String... __) {
     @Cleanup val connection = DriverManager.getConnection(DB_URL);
     @Cleanup val statement = connection.createStatement();
     statement.executeUpdate(CREATE_TABLE_SQL);
     statement.executeUpdate(INSERT_STUDENT_SQL);
     @Cleanup val resultSet = statement.executeQuery(GET_STUDENTS_SQL);
     while (resultSet.next())
-      System.out.printf("%d %s %d\n",
-          resultSet.getInt("id"),
-          resultSet.getString("name"),
-          resultSet.getInt("group_id"));
+      log.info(Student.from(resultSet).toString());
+  }
+}
+
+@Value
+@FieldNameConstants
+class Student {
+  int id;
+  String name;
+  int groupId;
+
+  @NotNull
+  @SneakyThrows
+  @Contract("_ -> new")
+  public static Student from(@NotNull ResultSet resultSet) {
+    return new Student(
+        resultSet.getInt(Fields.id),
+        resultSet.getString(Fields.name),
+        resultSet.getInt(Fields.groupId));
   }
 }

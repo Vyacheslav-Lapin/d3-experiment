@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.vlapin.experiments.d3experiment.model.Post;
 
 @FeignClient(
-    name = "jsonplaceholder",
-    url = "https://jsonplaceholder.typicode.com/")
+    name = "JSONPlaceHolder"
+    , url = "https://jsonplaceholder.typicode.com"
+//    , path = "/posts"
+)
 @RequestMapping("posts")
 public interface JSONPlaceHolderClient {
 
   @GetMapping
+    //@RequestMapping(method = RequestMethod.GET)
   List<Post> getPosts();
 
   @GetMapping(path = "{postId}", produces = APPLICATION_JSON_VALUE)

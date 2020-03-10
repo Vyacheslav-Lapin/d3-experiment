@@ -1,5 +1,6 @@
 package ru.vlapin.experiments.d3experiment.model;
 
+//import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.Column;
 import javax.persistence.Entity;
